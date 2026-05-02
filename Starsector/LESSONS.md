@@ -24,10 +24,14 @@
 
 - **For custom toggleable Starsector buttons, use explicit post-creation overrides if the four visual states matter.** A reliable pattern is: create the area checkbox with blank text if you render your own label; use the constructor `bg` for checked fill/border; then apply `setGlowOverride(...)` and `setBorderOverride(...)` after creation based on `button.isChecked`. Keep the override path shared between equivalent controls so tags, modes, or other toggle families do not drift.
 
+- **Area-checkbox glow can look like a bright border.** The observed render order is black base, checked fill if checked, border, superclass button render, then glow when `glowAmount > 0`. If hover/glow is bright and the unchecked interior remains black, the glow can read as a bright outline rather than a filled hover. `setBorderThickness(0f)` is a useful scoped mitigation when you want the hover/fill to occupy more of the control and do not need a separate border.
+
 - **Cache reflective UI override methods and apply them only when state changes.** Calling methods such as `setGlowOverride` or `setBorderOverride` by generic reflection on every rebuild/frame can introduce visible lag even for unrelated UI buttons. Cache `Method` handles by runtime button class and skip reapplying if the checked state has not changed.
 
 - **Avoid extra row/container fills around area-checkbox controls unless you intentionally want a second visual layer.** A parent fill can mask hover, make selected state too bright, or make two controls with identical checkbox colors appear different. For checkbox-driven state, first test with the row/container `fillColor` unset, then add fill only if it is part of the intended design.
 
-- **Raw Starsector UI colors often render much darker than their RGB values suggest.** Checkbox glow/hover colors in particular can be dimmed or tinted by the engine. It can be correct to use very bright raw colors, including white for a neutral hover, to get a readable dark-gray or saturated hover in game.
+- **Raw Starsector UI colors often render much darker than their RGB values suggest.** Checkbox glow/hover colors in particular can be dimmed or tinted by the engine; current AGC visual evidence suggests roughly 75% effective dimming for these controls. It can be correct to use very bright raw colors, including white for a neutral hover, to get a readable dark-gray or saturated hover in game.
+
+- **For `addAreaCheckbox(...)`, put hover colors in the `base` slot.** Passing a hover color as `bg` or `bright` will not make a normal unchecked button hover with that color. `bg` is checked fill/border, and `bright` is built-in label text color.
 
 - **Do not debug Starsector UI color bugs as simple palette problems until the render path is understood.** In AGC, multiple color retunes failed because the issue was slot semantics and render layering: `base/bg/bright` did not mean idle/hover/selected-hover, built-in text was blank, `setBgOverride` duplicated constructor behavior, and extra row fill changed the apparent result. First identify which UI layer owns idle fill, checked fill, glow, border, and label text.
