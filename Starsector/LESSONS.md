@@ -36,6 +36,8 @@
 
 - **Do not debug Starsector UI color bugs as simple palette problems until the render path is understood.** In AGC, multiple color retunes failed because the issue was slot semantics and render layering: `base/bg/bright` did not mean idle/hover/selected-hover, built-in text was blank, `setBgOverride` duplicated constructor behavior, and extra row fill changed the apparent result. First identify which UI layer owns idle fill, checked fill, glow, border, and label text.
 
+- **A checked and unchecked Starsector area checkbox is still one widget class.** If the UI appears to have separate selected and unselected button types, that may just be state-specific overrides applied after creation. Prefer one shared helper that chooses colors from `button.isChecked` over forking separate widget paths unless the layout or input model truly differs.
+
 - **UI libraries are not always drop-in replacements for Starsector campaign buttons.** LunaLib has custom-rendered `LunaUIButton` / `LunaToggleButton` elements and MagicLib has combat/bounty UI helpers, but those are framework-level components rather than direct `ButtonAPI` replacements for an existing custom campaign screen. Treat a migration to those libraries as a UI rewrite, not a small color fix.
 
 - **For cramped Starsector UI labels, truncate after wrapping, not before.** If a cell has two visual lines, first pack whole words into the two-line area, then add an ellipsis only to the final visible line if text remains. Truncating the raw string before wrapping can waste the second line and produce useless output such as a bare `...` where a meaningful word plus ellipsis would fit.
