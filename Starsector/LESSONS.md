@@ -10,7 +10,9 @@
 
 - **For overkill or waste avoidance, bad matchups may inflate durability; good matchups usually should not deflate it below baseline.** If a weapon is strong against armor or shields, lowering the target's apparent health can perversely discourage the right weapon from firing because the target looks "too easy" to kill. For waste/overkill heuristics, a safer simple model is baseline hull/armor/shield durability plus penalties only for poor damage-type matchups.
 
-- **Do not solve Starsector custom-UI overflow by guessing raw font asset paths.** A raw `TooltipMakerAPI.setParaFont("graphics/fonts/...")` override can crash in specific UI paths, and built-in "small" font helpers can change the font family/style rather than preserving the original look at a smaller size. Prefer the default proven `addPara(...)` path unless a font method is known-safe in the exact target screen.
+- **Do not solve Starsector custom-UI overflow by guessing raw font asset paths.** A raw `TooltipMakerAPI.setParaFont("graphics/fonts/...")` override can crash in specific UI paths, and built-in "small" font helpers can change the font family/style rather than preserving the original look at a smaller size. Inspect `TooltipMakerAPI` / `LabelAPI`, verify the font asset exists under `graphics/fonts`, and test the exact screen before treating a font override as safe.
+
+- **Use `LabelAPI.setAlignment(...)` for centered fixed-width labels when available.** Starsector label alignment is easy to miss, but it is better than centering by estimated character widths. If a checkbox or button is rendered with a negative x offset to expand glow/fill, center the label inside the clipped visible region rather than the negative-offset rectangle.
 
 - **Shared GUI text helpers can turn a visual experiment into a global crash.** Centralizing text rendering is useful, but a helper that mutates tooltip font state can break every screen routed through it, including fallback/error UI. Keep shared text helpers behavior-preserving until the font/text method has been proven safe in all affected UI flows.
 
