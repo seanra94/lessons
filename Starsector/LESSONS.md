@@ -46,4 +46,6 @@
 
 - **Runtime-loaded Starsector UI code favors boring duplication over untested abstraction.** If extracting two duplicated lines introduces a new runtime-visible class, helper file, or superclass, the abstraction can be riskier than the duplication. In custom UI hot paths, prefer small helper methods inside an already-instantiated class or an existing stable utility object unless the new boundary has a concrete payoff and an in-game validation plan.
 
+- **Leave sparse comments around non-obvious Starsector workarounds, not around every UI line.** Starsector UI and combat APIs often require code that looks wrong until the engine behavior is known: classloader-sensitive helper placement, forwarded input consumption, tooltip suppression, checkbox color-slot overrides, and compatibility migrations. Document the reason for those decisions close to the code; do not add comments that only paraphrase ordinary Kotlin.
+
 - **For cramped Starsector UI labels, truncate after wrapping, not before.** If a cell has two visual lines, first pack whole words into the two-line area, then add an ellipsis only to the final visible line if text remains. Truncating the raw string before wrapping can waste the second line and produce useless output such as a bare `...` where a meaningful word plus ellipsis would fit.
